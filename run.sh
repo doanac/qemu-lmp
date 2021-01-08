@@ -13,8 +13,10 @@ qemu-system-x86_64 \
 	-drive if=pflash,format=raw,readonly,file=/usr/share/OVMF/OVMF_CODE.fd \
 	-vga std \
 	-nographic \
-	-m 512 \
+	-m 4096 \
 	-cpu kvm64 -enable-kvm \
 	-serial mon:stdio \
 	-serial null \
+	-device e1000,netdev=net0 \
+	-netdev user,id=net0,hostfwd=tcp::22-:22,hostfwd=::8888-:8888 \
 	-drive if=none,id=hd0,file=${1},format=raw
