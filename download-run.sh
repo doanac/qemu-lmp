@@ -1,10 +1,14 @@
 #!/bin/sh -e
 
-if [ $# -ne 1 ] ; then
-	echo "Usage: $0 <url of img.wic.gz>"
+if [ $# -ne 2 ] ; then
+	echo "Usage: $0 <wicfile> <url of img.wic.gz>"
 	exit 0
 fi
 
-wget $1 -O - | gunzip > /tmp/img.wic
+wic=$1
+url=$2
+if [ ! -f $wic ] ; then
+	wget $url -O - | gunzip > $wic
+fi
 echo "Running ..."
-run.sh /tmp/img.wic
+run.sh $wic
