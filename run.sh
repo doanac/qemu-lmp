@@ -5,6 +5,8 @@ if [ $# -ne 1 ] ; then
 	exit 0
 fi
 
+FORWARD=${FORWARD-"-netdev user,id=net0,hostfwd=tcp::22-:22,hostfwd=::8888-:8888"}
+
 qemu-system-x86_64 \
 	-device virtio-scsi-pci,id=scsi \
 	-device scsi-hd,drive=hd0 \
@@ -18,5 +20,5 @@ qemu-system-x86_64 \
 	-serial mon:stdio \
 	-serial null \
 	-device e1000,netdev=net0 \
-	-netdev user,id=net0,hostfwd=tcp::22-:22,hostfwd=::8888-:8888 \
+	${FORWARD} \
 	-drive if=none,id=hd0,file=${1},format=raw
