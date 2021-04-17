@@ -14,12 +14,15 @@ class Container(NamedTuple):
 
         return {
             "name": f"qemu-{idx}",
-            "image": "doanac/qemu-lmp:1dc8a0c",
+            "image": "doanac/qemu-lmp",
             "command": [
-              "/usr/local/bin/download-run.sh",
+              "/usr/local/bin/download-run-in-k8s.sh",
               f"/data/qemu-{idx}.wic",
               f"-netdev user,id=net0,hostfwd=tcp::{port}-:22",
               self.wic_url,
+            ],
+            "env": [
+                {"name": "CONTAINER_IDX", "value": str(idx)},
             ],
             "tty": True,
             "stdin": True,
@@ -102,7 +105,7 @@ ss_templ = {
           ],
           "resources": {
             "requests": {
-              "storage": "40G"
+              "storage": "60G"
             }
           }
         }
@@ -124,7 +127,6 @@ def generate(wic_url: str, num_instances: int, use_host_alias: bool) -> str:
     return json.dumps(data, indent=2)
 
 
-url = "https://storage.googleapis.com/tenant-osf/this-be-in-staging/lmp/4/intel-corei7-64/lmp-factory-image-intel-corei7-64.wic.gz"
-# spec = generate(url, 12, True)  # good balance for 8G RAM node
-spec = generate(url, 4, True)
+url = "https://storage.googleapis.com/tenant-osf/this-be-in-staging/lmp/8/intel-corei7-64/lmp-factory-image-intel-corei7-64.wic.gz"
+spec = generate(url, 10, True)  # good balance for 8G RAM node
 print(spec)
